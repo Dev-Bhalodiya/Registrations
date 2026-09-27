@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learner Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202A;
+    --paper:#EDEFEF;
+    --raised:#FFFFFF;
+    --slate:#57666F;
+    --line:#CBD2D4;
+    --amber:#B8712A;
+    --forest:#2F6B4F;
+    --rose:#AF3A44;
+    --focus:#2E6E8E;
+    --font-display:'Zilla Slab', Georgia, serif;
+    --font-body:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--focus);}
+  :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important;}
+  }
+
+  .wrap{max-width:920px; margin:0 auto; padding:28px 20px 80px;}
+
+  /* ---------- header ---------- */
+  header.masthead{
+    border-bottom:3px solid var(--ink);
+    padding-bottom:16px;
+    margin-bottom:22px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:12px;
+  }
+  header.masthead h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:2rem;
+    margin:0 0 4px;
+    letter-spacing:0.01em;
+  }
+  header.masthead .tagline{
+    margin:0;
+    color:var(--slate);
+    font-size:0.95rem;
+    max-width:46ch;
+  }
+  .today-stamp{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--slate);
+    border:1.5px solid var(--line);
+    padding:6px 12px;
+    white-space:nowrap;
+  }
+  .today-stamp b{color:var(--ink); font-weight:600;}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex; gap:4px; border-bottom:1.5px solid var(--line); margin-bottom:26px;}
+  .tab-btn{
+    font-family:var(--font-display);
+    font-size:1.05rem;
+    font-weight:600;
+    background:none;
+    border:none;
+    border-bottom:3px solid transparent;
+    padding:10px 4px 12px;
+    margin-right:24px;
+    color:var(--slate);
+    cursor:pointer;
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--ink); border-bottom-color:var(--amber);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ---------- section headings ---------- */
+  h2.section-title{
+    font-family:var(--font-display);
+    font-size:1.3rem;
+    font-weight:600;
+    margin:34px 0 10px;
+  }
+  h2.section-title:first-of-type{margin-top:0;}
+  h3.sub-title{
+    font-family:var(--font-body);
+    font-size:0.95rem;
+    font-weight:600;
+    color:var(--slate);
+    margin:0 0 10px;
+  }
+
+  /* ---------- help / details ---------- */
+  details.help{
+    background:var(--raised);
+    border:1.5px solid var(--line);
+    padding:2px 16px 4px;
+    margin-bottom:18px;
+  }
+  details.help summary{
+    cursor:pointer;
+    font-weight:600;
+    padding:10px 0;
+    font-size:0.92rem;
+  }
+  details.help .help-body{
+    font-size:0.88rem;
+    color:var(--slate);
+    padding-bottom:14px;
+    border-top:1px solid var(--line);
+    padding-top:10px;
+  }
+  details.help .help-body p{margin:0 0 10px;}
+  details.help .help-body code{
+    font-family:var(--font-mono);
+    background:var(--paper);
+    padding:1px 5px;
+    font-size:0.85em;
+    color:var(--ink);
+  }
+  details.help .help-body ul{margin:6px 0 10px; padding-left:20px;}
+
+  /* ---------- segmented control ---------- */
+  .segmented{display:flex; border-bottom:1.5px solid var(--line); margin-bottom:16px;}
+  .method-btn{
+    font-family:var(--font-body);
+    font-size:0.88rem;
+    font-weight:500;
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    padding:9px 4px;
+    margin-right:22px;
+    color:var(--slate);
+    cursor:pointer;
+  }
+  .method-btn.active{color:var(--ink); border-bottom-color:var(--ink); font-weight:600;}
+  .method-panel{display:none;}
+  .method-panel.active{display:block;}
+
+  /* ---------- forms ---------- */
+  .field-row{display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:12px;}
+  .field{display:flex; flex-direction:column; gap:5px; flex:1 1 160px;}
+  .field label{font-size:0.8rem; color:var(--slate);}
+  input[type="text"], input[type="date"], input[type="number"], textarea{
+    font-family:var(--font-body);
+    font-size:0.92rem;
+    padding:8px 10px;
+    border:1.5px solid var(--line);
+    background:var(--raised);
+    color:var(--ink);
+  }
+  textarea{font-family:var(--font-mono); font-size:0.82rem; min-height:110px; resize:vertical;}
+  input[type="file"]{font-family:var(--font-body); font-size:0.88rem;}
+
+  button{font-family:var(--font-body); cursor:pointer;}
+  .btn{
+    display:inline-block;
+    padding:9px 18px;
+    font-size:0.88rem;
+    font-weight:600;
+    border:1.5px solid var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .btn:hover{background:#233040;}
+  .btn.secondary{background:transparent; color:var(--ink);}
+  .btn.secondary:hover{background:rgba(22,32,42,0.06);}
+  .btn.quiet{
+    border-color:transparent;
+    background:none;
+    color:var(--slate);
+    text-decoration:underline;
+    padding:9px 2px;
+    font-weight:500;
+  }
+  .btn.quiet:hover{color:var(--ink);}
+  .btn.danger{border-color:var(--rose); color:var(--rose); background:none;}
+  .btn.danger:hover{background:rgba(175,58,68,0.08);}
+  .btn-row{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 6px;}
+
+  /* ---------- error list ---------- */
+  .parse-errors{
+    background:#FBF2E9;
+    border:1.5px solid var(--amber);
+    padding:10px 14px;
+    margin:10px 0;
+    font-size:0.85rem;
+  }
+  .parse-errors p{margin:0 0 6px; font-weight:600; color:#8A5620;}
+  .parse-errors ul{margin:0; padding-left:18px; color:#6B4419;}
+
+  /* ---------- tables ---------- */
+  .table-scroll{overflow-x:auto; border-bottom:1px solid var(--line); margin-bottom:8px;}
+  table{width:100%; border-collapse:collapse; font-size:0.88rem;}
+  thead th{
+    text-align:left;
+    font-weight:600;
+    font-size:0.78rem;
+    color:var(--slate);
+    border-bottom:2px solid var(--ink);
+    padding:6px 10px;
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.num, th.num{text-align:right; font-family:var(--font-mono);}
+  td.mono{font-family:var(--font-mono);}
+  .empty-row td{color:var(--slate); font-style:normal; padding:16px 10px;}
+  .remove-link{background:none; border:none; color:var(--slate); text-decoration:underline; font-size:0.82rem; padding:0; cursor:pointer;}
+  .remove-link:hover{color:var(--rose);}
+
+  /* ---------- stamp badges ---------- */
+  .stamp{
+    display:inline-block;
+    border:2px solid currentColor;
+    border-radius:3px;
+    padding:1px 9px;
+    font-family:var(--font-mono);
+    font-size:0.7rem;
+    font-weight:600;
+    letter-spacing:0.02em;
+    transform:rotate(-2deg);
+    white-space:nowrap;
+  }
+  .stamp.early{color:var(--amber);}
+  .stamp.natural{color:var(--slate);}
+  .stamp.spike{color:var(--amber);}
+  .stamp.dip{color:var(--rose);}
+  .stamp.higher{color:var(--forest);}
+  .stamp.lower{color:var(--rose);}
+  .stamp.unchanged{color:var(--slate);}
+
+  /* ---------- stat blocks ---------- */
+  .stat-row{display:flex; flex-wrap:wrap; gap:26px; margin:16px 0 24px;}
+  .stat{min-width:130px;}
+  .stat .num{font-family:var(--font-mono); font-size:1.8rem; font-weight:600; line-height:1;}
+  .stat .label{font-size:0.8rem; color:var(--slate); margin-top:4px;}
+
+  /* ---------- chart ---------- */
+  .chart-note{font-size:0.8rem; color:var(--slate); margin:0 0 8px;}
+  .chart-scroll{overflow-x:auto; padding-bottom:6px;}
+  .chart-legend{display:flex; gap:18px; font-size:0.78rem; color:var(--slate); margin-top:6px; flex-wrap:wrap;}
+  .chart-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend-swatch{width:11px; height:11px; display:inline-block; border-radius:2px;}
+
+  /* ---------- compare card ---------- */
+  .compare-card{
+    border:1.5px solid var(--line);
+    background:var(--raised);
+    padding:18px 20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:26px;
+    align-items:center;
+    margin-bottom:24px;
+  }
+  .compare-block .num{font-family:var(--font-mono); font-size:1.7rem; font-weight:600;}
+  .compare-block .label{font-size:0.78rem; color:var(--slate);}
+  .compare-block .range{font-size:0.72rem; color:var(--slate); font-family:var(--font-mono);}
+  .compare-verdict{margin-left:auto; text-align:right;}
+  .compare-verdict .delta{font-size:0.82rem; color:var(--slate); margin-top:6px;}
+
+  /* ---------- threshold control ---------- */
+  .threshold-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:8px 0 22px; font-size:0.88rem;}
+  .threshold-row input{width:80px;}
+
+  footer{
+    margin-top:50px;
+    padding-top:16px;
+    border-top:1.5px solid var(--line);
+    font-size:0.8rem;
+    color:var(--slate);
+  }
+
+  @media (max-width:600px){
+    header.masthead h1{font-size:1.6rem;}
+    .stat-row{gap:18px;}
+    .compare-verdict{margin-left:0; text-align:left;}
+    thead th, tbody td{padding:7px 6px; font-size:0.82rem;}
+    table{font-size:0.82rem;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <h1>Learner Ledger</h1>
+      <p class="tagline">Two record books: check withdrawal timing against expiry dates, and watch registration trends over time.</p>
+    </div>
+    <div class="today-stamp">Today: <b id="todayStamp"></b></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="expiry" type="button">Withdrawal Compliance</button>
+    <button class="tab-btn" data-tab="registration" type="button">Registration Trends</button>
+  </nav>
+
+  <!-- ================= EXPIRY TAB ================= -->
+  <section class="tab-panel active" id="tab-expiry">
+
+    <details class="help" open>
+      <summary>How dates work here</summary>
+      <div class="help-body">
+        <p>Enter dates as <code>DD/MM/YYYY</code> (e.g. 15/03/2026) or <code>YYYY-MM-DD</code> (e.g. 2026-03-15). A date typed the U.S. way, like <code>03/15/2026</code>, will be rejected rather than silently misread — that's deliberate.</p>
+        <p>Uploading a CSV from Excel? Format the date columns as one of the patterns above before saving. If a column got auto-converted into a plain number (like <code>46095</code>), that's fine too — Excel/Sheets date serial numbers are recognised automatically.</p>
+        <p>Manual entry uses your browser's own date picker, so the format question never comes up there.</p>
+        <p>Anything downloaded from this page comes out as <code>YYYY-MM-DD</code>, which Excel and Google Sheets both read as a real date automatically — not as text.</p>
+      </div>
+    </details>
+
+    <h2 class="section-title">Add withdrawn learners</h2>
+
+    <div class="segmented" data-group="expiry">
+      <button class="method-btn active" data-method="upload">Upload CSV</button>
+      <button class="method-btn" data-method="manual">Manual entry</button>
+      <button class="method-btn" data-method="paste">Paste data</button>
+    </div>
+
+    <div class="method-panel active" data-group="expiry" data-method="upload">
+      <div class="field-row">
+        <div class="field" style="flex:2 1 220px;">
+          <label for="expiryFileInput">CSV file with columns: Learner, Withdrawn Date, Expiry Date</label>
+          <input type="file" id="expiryFileInput" accept=".csv,.txt">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn quiet" id="expiryTemplateBtn" type="button">Download a blank template</button>
+      </div>
+    </div>
+
+    <div class="method-panel" data-group="expiry" data-method="manual">
+      <form id="expiryManualForm">
+        <div class="field-row">
+          <div class="field" style="flex:2 1 200px;">
+            <label for="expiryManualLearner">Learner name / ID</label>
+            <input type="text" id="expiryManualLearner" required>
+          </div>
+          <div class="field">
+            <label for="expiryManualWithdrawn">Withdrawn date</label>
+            <input type="date" id="expiryManualWithdrawn" required>
+          </div>
+          <div class="field">
+            <label for="expiryManualExpiry">Expiry date</label>
+            <input type="date" id="expiryManualExpiry" required>
+          </div>
+          <div class="field" style="flex:0 0 auto;">
+            <button class="btn" type="submit">Add record</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="method-panel" data-group="expiry" data-method="paste">
+      <div class="field">
+        <label for="expiryPasteArea">Paste rows copied from Excel or a CSV (first row = headers: Learner, Withdrawn Date, Expiry Date)</label>
+        <textarea id="expiryPasteArea" placeholder="Learner&#9;Withdrawn Date&#9;Expiry Date&#10;Aditi Sharma&#9;15/01/2026&#9;30/06/2026"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="expiryPasteBtn" type="button">Parse and add</button>
+      </div>
+    </div>
+
+    <div id="expiryErrors"></div>
+
+    <h2 class="section-title">Withdrawn learners on record</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Learner</th><th>Withdrawn</th><th>Expiry</th><th></th></tr></thead>
+        <tbody id="expiryTableBody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn danger" id="expiryClearBtn" type="button">Clear all records</button>
+    </div>
+
+    <h2 class="section-title">Compliance check</h2>
+    <div class="stat-row" id="expirySummary"></div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Learner</th><th>Withdrawn</th><th>Expiry</th><th>Status</th><th class="num">Days vs. expiry</th></tr></thead>
+        <tbody id="expiryResultsBody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" id="expiryExportBtn" type="button">Download results (CSV)</button>
+    </div>
+
+  </section>
+
+  <!-- ================= REGISTRATION TAB ================= -->
+  <section class="tab-panel" id="tab-registration">
+
+    <details class="help">
+      <summary>How dates work here</summary>
+      <div class="help-body">
+        <p>Enter dates as <code>DD/MM/YYYY</code> (e.g. 15/03/2026) or <code>YYYY-MM-DD</code> (e.g. 2026-03-15). A date typed the U.S. way, like <code>03/15/2026</code>, will be rejected rather than silently misread — that's deliberate.</p>
+        <p>Uploading a CSV from Excel? Format the date column as one of the patterns above before saving. Plain numbers like <code>46095</code> (Excel/Sheets date serial numbers) are recognised automatically too.</p>
+        <p>Manual entry uses your browser's own date picker, so the format question never comes up there.</p>
+        <p>Anything downloaded from this page comes out as <code>YYYY-MM-DD</code>, which Excel and Google Sheets both read as a real date automatically.</p>
+      </div>
+    </details>
+
+    <h2 class="section-title">Add registered learners</h2>
+
+    <div class="segmented" data-group="registration">
+      <button class="method-btn active" data-method="upload">Upload CSV</button>
+      <button class="method-btn" data-method="manual">Manual entry</button>
+      <button class="method-btn" data-method="paste">Paste data</button>
+    </div>
+
+    <div class="method-panel active" data-group="registration" data-method="upload">
+      <div class="field-row">
+        <div class="field" style="flex:2 1 220px;">
+          <label for="registrationFileInput">CSV file with columns: Learner, Registration Date</label>
+          <input type="file" id="registrationFileInput" accept=".csv,.txt">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn quiet" id="registrationTemplateBtn" type="button">Download a blank template</button>
+      </div>
+    </div>
+
+    <div class="method-panel" data-group="registration" data-method="manual">
+      <form id="registrationManualForm">
+        <div class="field-row">
+          <div class="field" style="flex:2 1 200px;">
+            <label for="registrationManualLearner">Learner name / ID</label>
+            <input type="text" id="registrationManualLearner" required>
+          </div>
+          <div class="field">
+            <label for="registrationManualDate">Registration date</label>
+            <input type="date" id="registrationManualDate" required>
+          </div>
+          <div class="field" style="flex:0 0 auto;">
+            <button class="btn" type="submit">Add record</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="method-panel" data-group="registration" data-method="paste">
+      <div class="field">
+        <label for="registrationPasteArea">Paste rows copied from Excel or a CSV (first row = headers: Learner, Registration Date)</label>
+        <textarea id="registrationPasteArea" placeholder="Learner&#9;Registration Date&#10;Aditi Sharma&#9;15/01/2025"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="registrationPasteBtn" type="button">Parse and add</button>
+      </div>
+    </div>
+
+    <div id="registrationErrors"></div>
+
+    <h2 class="section-title">Registered learners on record</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Learner</th><th>Registration date</th><th></th></tr></thead>
+        <tbody id="registrationTableBody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn danger" id="registrationClearBtn" type="button">Clear all records</button>
+    </div>
+
+    <h2 class="section-title">Monthly registration trend</h2>
+    <p class="chart-note" id="windowStamp"></p>
+
+    <div class="threshold-row">
+      <label for="thresholdInput">Flag a month when registrations move by at least</label>
+      <input type="number" id="thresholdInput" min="1" max="500" value="30">
+      <span>% from the month before</span>
+    </div>
+
+    <div class="chart-scroll">
+      <svg id="trendChart" width="960" height="230"></svg>
+    </div>
+    <div class="chart-legend">
+      <span><i class="legend-swatch" style="background:var(--ink)"></i> normal</span>
+      <span><i class="legend-swatch" style="background:var(--amber)"></i> spike</span>
+      <span><i class="legend-swatch" style="background:var(--rose)"></i> dip</span>
+    </div>
+
+    <div class="table-scroll" style="margin-top:18px;">
+      <table>
+        <thead><tr><th>Month</th><th class="num">Registrations</th><th class="num">Change vs. prior month</th><th>Flag</th></tr></thead>
+        <tbody id="monthlyTableBody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" id="registrationExportSummaryBtn" type="button">Download monthly summary (CSV)</button>
+    </div>
+
+    <h2 class="section-title">Last 12 months vs. the 12 months before that</h2>
+    <div class="compare-card" id="compareCard"></div>
+
+    <h2 class="section-title">Learners registered in the last 24 months</h2>
+    <p class="chart-note" id="learner24Count"></p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th class="num">#</th><th>Learner</th><th>Registration date</th></tr></thead>
+        <tbody id="learner24TableBody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" id="registrationExportListBtn" type="button">Download this list (CSV)</button>
+    </div>
+
+  </section>
+
+  <footer>
+    Your data stays in this browser (nothing is uploaded anywhere). It's saved locally, so it will still be here next time — as long as you use the same browser on the same device. Download a CSV whenever you want a backup or need to move data elsewhere.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+var STORAGE = {
+  expiry: 'learnerLedger.expiryRecords',
+  registration: 'learnerLedger.registrationRecords',
+  threshold: 'learnerLedger.spikeThreshold'
+};
+var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ============================================================
+   DATE HELPERS
+   ============================================================ */
+function excelSerialToDate(serial){
+  var utcDays = Math.floor(serial - 25569);
+  var utcMs = utcDays * 86400 * 1000;
+  var d = new Date(utcMs);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+}
+function isValidYMD(y,m,d){
+  if(m<1||m>12) return false;
+  var dim = new Date(Date.UTC(y,m,0)).getUTCDate();
+  return d>=1 && d<=dim;
+}
+function parseFlexibleDate(raw){
+  if(raw===null||raw===undefined) return {error:'empty value'};
+  var str = String(raw).trim();
+  if(str==='') return {error:'empty value'};
+
+  var m = str.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+  if(m){
+    var y=+m[1], mo=+m[2], d=+m[3];
+    if(isValidYMD(y,mo,d)) return {date:new Date(Date.UTC(y,mo-1,d))};
+    return {error:'"'+str+'" looks like a date but the day/month is out of range'};
+  }
+  m = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+  if(m){
+    var d2=+m[1], mo2=+m[2], y2=+m[3];
+    if(isValidYMD(y2,mo2,d2)) return {date:new Date(Date.UTC(y2,mo2-1,d2))};
+    return {error:'"'+str+'" isn\'t a valid day/month/year date'};
+  }
+  if(/^\d+(\.\d+)?$/.test(str)){
+    var n = parseFloat(str);
+    if(n>20000 && n<80000) return {date: excelSerialToDate(n)};
+    return {error:'"'+str+'" looks like a number, not a date'};
+  }
+  var fb = new Date(str);
+  if(!isNaN(fb.getTime())) return {date:new Date(Date.UTC(fb.getFullYear(), fb.getMonth(), fb.getDate()))};
+  return {error:'couldn\'t recognise "'+str+'" as a date'};
+}
+function formatISO(date){
+  var y=date.getUTCFullYear(), m=String(date.getUTCMonth()+1).padStart(2,'0'), d=String(date.getUTCDate()).padStart(2,'0');
+  return y+'-'+m+'-'+d;
+}
+function formatDisplay(date){
+  return String(date.getUTCDate()).padStart(2,'0')+' '+MONTH_NAMES[date.getUTCMonth()]+' '+date.getUTCFullYear();
+}
+function monthKey(date){ return date.getUTCFullYear()+'-'+String(date.getUTCMonth()+1).padStart(2,'0'); }
+function monthLabel(key){ var p=key.split('-'); return MONTH_NAMES[+p[1]-1]+' '+p[0]; }
+function monthLabelShort(key){ var p=key.split('-'); return MONTH_NAMES[+p[1]-1]+" '"+p[0].slice(2); }
+function monthRange(today, startOffset, endOffset){
+  var keys=[], y=today.getUTCFullYear(), m=today.getUTCMonth();
+  for(var i=startOffset;i>=endOffset;i--){
+    var d=new Date(Date.UTC(y, m-i, 1));
+    keys.push(monthKey(d));
+  }
+  return keys;
+}
+function last24MonthsKeys(today){ return monthRange(today,23,0); }
+function todayUTC(){ var n=new Date(); return new Date(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate())); }
+function uid(){ return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2); }
+
+/* ============================================================
+   ANALYTICS
+   ============================================================ */
+function computeMonthlyCounts(dates, monthKeys){
+  var counts={};
+  monthKeys.forEach(function(k){ counts[k]=0; });
+  dates.forEach(function(d){ var k=monthKey(d); if(k in counts) counts[k]++; });
+  return monthKeys.map(function(k){ return {month:k, label:monthLabel(k), count:counts[k]}; });
+}
+function computeSpikeDip(monthlyCounts, thresholdPct){
+  return monthlyCounts.map(function(row,i){
+    if(i===0) return Object.assign({}, row, {change:null, flag:null});
+    var prev=monthlyCounts[i-1].count, cur=row.count;
+    if(prev===0){
+      if(cur===0) return Object.assign({}, row, {change:0, flag:null});
+      return Object.assign({}, row, {change:null, flag:'spike'});
+    }
+    var change=((cur-prev)/prev)*100;
+    var flag=null;
+    if(change>=thresholdPct) flag='spike';
+    else if(change<=-thresholdPct) flag='dip';
+    return Object.assign({}, row, {change:change, flag:flag});
+  });
+}
+function compare12MonthPeriods(dates, today){
+  var recentKeys={}, priorKeys={};
+  monthRange(today,11,0).forEach(function(k){ recentKeys[k]=true; });
+  monthRange(today,23,12).forEach(function(k){ priorKeys[k]=true; });
+  var recent=0, prior=0;
+  dates.forEach(function(d){
+    var k=monthKey(d);
+    if(recentKeys[k]) recent++; else if(priorKeys[k]) prior++;
+  });
+  var verdict='unchanged';
+  if(recent>prior) verdict='higher'; else if(recent<prior) verdict='lower';
+  var pctChange = prior===0 ? (recent===0?0:null) : ((recent-prior)/prior)*100;
+  return {recent:recent, prior:prior, verdict:verdict, pctChange:pctChange};
+}
+function classifyExpiry(withdrawn, expiry){
+  return withdrawn.getTime() < expiry.getTime() ? 'early' : 'natural';
+}
+
+/* ============================================================
+   CSV / PASTE PARSING
+   ============================================================ */
+function splitDelimitedLine(line, delim){
+  var out=[], cur='', inQuotes=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(inQuotes){
+      if(c==='"'){ if(line[i+1]==='"'){cur+='"'; i++;} else inQuotes=false; }
+      else cur+=c;
+    } else {
+      if(c==='"') inQuotes=true;
+      else if(c===delim){ out.push(cur); cur=''; }
+      else cur+=c;
+    }
+  }
+  out.push(cur);
+  return out.map(function(s){ return s.trim(); });
+}
+function parseDelimitedText(text){
+  var lines = text.replace(/\r\n/g,'\n').split('\n').filter(function(l){ return l.trim()!==''; });
+  if(!lines.length) return {headers:[], rows:[]};
+  var delim = lines[0].indexOf('\t')!==-1 ? '\t' : ',';
+  var headers = splitDelimitedLine(lines[0], delim).map(function(h){ return h.toLowerCase(); });
+  var rows = lines.slice(1).map(function(l){ return splitDelimitedLine(l, delim); });
+  return {headers:headers, rows:rows};
+}
+function findCol(headers, candidates){
+  for(var i=0;i<candidates.length;i++){
+    var idx = headers.indexOf(candidates[i]);
+    if(idx!==-1) return idx;
+  }
+  for(var j=0;j<candidates.length;j++){
+    for(var h=0;h<headers.length;h++){
+      if(headers[h].indexOf(candidates[j])!==-1) return h;
+    }
+  }
+  return -1;
+}
+
+/* ============================================================
+   STORAGE
+   ============================================================ */
+function loadRecords(key){
+  try{ var raw=localStorage.getItem(key); return raw?JSON.parse(raw):[]; }
+  catch(e){ return []; }
+}
+function saveRecords(key, records){
+  try{ localStorage.setItem(key, JSON.stringify(records)); }
+  catch(e){ alert('Could not save to this browser\'s storage. Your data may be too large, or storage is full or blocked.'); }
+}
+
+var expiryRecords = loadRecords(STORAGE.expiry);
+var registrationRecords = loadRecords(STORAGE.registration);
+var spikeThreshold = parseFloat(localStorage.getItem(STORAGE.threshold)) || 30;
+
+/* ============================================================
+   DOM HELPERS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function el(tag, attrs, children){
+  var e=document.createElement(tag);
+  if(attrs) Object.keys(attrs).forEach(function(k){
+    if(k==='text') e.textContent=attrs[k];
+    else if(k==='html') e.innerHTML=attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  });
+  (children||[]).forEach(function(c){ e.appendChild(c); });
+  return e;
+}
+function downloadCSV(filename, rows){
+  var csv = rows.map(function(r){
+    return r.map(function(v){
+      v = String(v===undefined||v===null?'':v);
+      if(v.indexOf(',')!==-1 || v.indexOf('"')!==-1 || v.indexOf('\n')!==-1){
+        v = '"'+v.replace(/"/g,'""')+'"';
+      }
+      return v;
+    }).join(',');
+  }).join('\r\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ============================================================
+   TABS + SEGMENTED CONTROLS
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    $('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+document.querySelectorAll('.segmented').forEach(function(seg){
+  var group = seg.dataset.group;
+  seg.querySelectorAll('.method-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      seg.querySelectorAll('.method-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.method-panel[data-group="'+group+'"]').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelector('.method-panel[data-group="'+group+'"][data-method="'+btn.dataset.method+'"]').classList.add('active');
+    });
+  });
+});
+
+/* ============================================================
+   EXPIRY TAB LOGIC
+   ============================================================ */
+function showErrors(containerId, errors){
+  var box = $(containerId);
+  box.innerHTML='';
+  if(!errors.length) return;
+  var wrap = el('div', {class:'parse-errors'});
+  wrap.appendChild(el('p', {text: errors.length+' row'+(errors.length>1?'s':'')+' could not be added:'}));
+  var ul = el('ul');
+  errors.slice(0,12).forEach(function(e){ ul.appendChild(el('li', {text:e})); });
+  if(errors.length>12) ul.appendChild(el('li', {text:'...and '+(errors.length-12)+' more.'}));
+  wrap.appendChild(ul);
+  box.appendChild(wrap);
+}
+
+function addExpiryRows(headers, rows){
+  var learnerIdx = findCol(headers, ['learner','name','learner id','learner name']);
+  var withdrawnIdx = findCol(headers, ['withdrawn date','withdrawal date','date withdrawn','withdrawn']);
+  var expiryIdx = findCol(headers, ['expiry date','expiration date','date of expiry','expiry']);
+  var errors=[];
+  if(withdrawnIdx===-1 || expiryIdx===-1){
+    errors.push('Couldn\'t find both a "Withdrawn Date" and an "Expiry Date" column in the header row. Check the column names match the template.');
+    showErrors('expiryErrors', errors);
+    return;
+  }
+  var added=0;
+  rows.forEach(function(row, i){
+    if(row.every(function(c){ return c===''; })) return;
+    var learner = learnerIdx!==-1 ? row[learnerIdx] : '';
+    if(!learner) learner = 'Learner (row '+(i+2)+')';
+    var wRes = parseFlexibleDate(row[withdrawnIdx]);
+    var eRes = parseFlexibleDate(row[expiryIdx]);
+    if(wRes.error){ errors.push('Row '+(i+2)+' ('+learner+'): withdrawn date - '+wRes.error); return; }
+    if(eRes.error){ errors.push('Row '+(i+2)+' ('+learner+'): expiry date - '+eRes.error); return; }
+    expiryRecords.push({id:uid(), learner:learner, withdrawn:formatISO(wRes.date), expiry:formatISO(eRes.date)});
+    added++;
+  });
+  if(added){ saveRecords(STORAGE.expiry, expiryRecords); renderExpiry(); }
+  showErrors('expiryErrors', errors);
+}
+
+$('expiryFileInput').addEventListener('change', function(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var parsed = parseDelimitedText(String(ev.target.result));
+    addExpiryRows(parsed.headers, parsed.rows);
+    $('expiryFileInput').value='';
+  };
+  reader.readAsText(file);
+});
+
+$('expiryTemplateBtn').addEventListener('click', function(){
+  downloadCSV('expiry-template.csv', [
+    ['Learner','Withdrawn Date','Expiry Date'],
+    ['Aditi Sharma','15/01/2026','30/06/2026'],
+    ['Ravi Kumar','20/07/2026','10/07/2026']
+  ]);
+});
+
+$('expiryManualForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var learner = $('expiryManualLearner').value.trim();
+  var wRes = parseFlexibleDate($('expiryManualWithdrawn').value);
+  var eRes = parseFlexibleDate($('expiryManualExpiry').value);
+  if(!learner || wRes.error || eRes.error){ showErrors('expiryErrors', ['Fill in a learner name and both dates.']); return; }
+  expiryRecords.push({id:uid(), learner:learner, withdrawn:formatISO(wRes.date), expiry:formatISO(eRes.date)});
+  saveRecords(STORAGE.expiry, expiryRecords);
+  showErrors('expiryErrors', []);
+  this.reset();
+  renderExpiry();
+});
+
+$('expiryPasteBtn').addEventListener('click', function(){
+  var text = $('expiryPasteArea').value;
+  if(!text.trim()) return;
+  var parsed = parseDelimitedText(text);
+  addExpiryRows(parsed.headers, parsed.rows);
+  $('expiryPasteArea').value='';
+});
+
+$('expiryClearBtn').addEventListener('click', function(){
+  if(!expiryRecords.length) return;
+  if(confirm('Remove all '+expiryRecords.length+' withdrawal records? This can\'t be undone.')){
+    expiryRecords=[]; saveRecords(STORAGE.expiry, expiryRecords); renderExpiry();
+  }
+});
+
+function removeExpiryRecord(id){
+  expiryRecords = expiryRecords.filter(function(r){ return r.id!==id; });
+  saveRecords(STORAGE.expiry, expiryRecords);
+  renderExpiry();
+}
+
+function renderExpiryTable(){
+  var body = $('expiryTableBody');
+  body.innerHTML='';
+  if(!expiryRecords.length){
+    body.appendChild(el('tr',{class:'empty-row'},[el('td',{colspan:'4',text:'No records yet. Add one above or upload a CSV.'})]));
+    return;
+  }
+  expiryRecords.forEach(function(r){
+    var btn = el('button',{class:'remove-link',type:'button',text:'Remove'});
+    btn.addEventListener('click', function(){ removeExpiryRecord(r.id); });
+    body.appendChild(el('tr',{},[
+      el('td',{text:r.learner}),
+      el('td',{class:'mono',text:r.withdrawn}),
+      el('td',{class:'mono',text:r.expiry}),
+      el('td',{},[btn])
+    ]));
+  });
+}
+
+function renderExpiryResults(){
+  var results = expiryRecords.map(function(r){
+    var w=parseFlexibleDate(r.withdrawn).date, ex=parseFlexibleDate(r.expiry).date;
+    var status = classifyExpiry(w, ex);
+    var days = Math.round((w.getTime()-ex.getTime())/86400000);
+    return Object.assign({}, r, {status:status, days:days});
+  });
+
+  var total = results.length;
+  var early = results.filter(function(r){ return r.status==='early'; }).length;
+  var natural = total-early;
+
+  var summary = $('expirySummary');
+  summary.innerHTML='';
+  function stat(num, label){
+    return el('div',{class:'stat'},[el('div',{class:'num',text:num}),el('div',{class:'label',text:label})]);
+  }
+  summary.appendChild(stat(total, 'Total withdrawn learners'));
+  summary.appendChild(stat(early+(total?' ('+Math.round(early/total*100)+'%)':''), 'Early withdrawals'));
+  summary.appendChild(stat(natural+(total?' ('+Math.round(natural/total*100)+'%)':''), 'Natural expiries'));
+
+  var body = $('expiryResultsBody');
+  body.innerHTML='';
+  if(!results.length){
+    body.appendChild(el('tr',{class:'empty-row'},[el('td',{colspan:'5',text:'Nothing to check yet.'})]));
+    return;
+  }
+  results.forEach(function(r){
+    var dayLabel;
+    if(r.days<0) dayLabel = Math.abs(r.days)+' day'+(Math.abs(r.days)===1?'':'s')+' before expiry';
+    else if(r.days>0) dayLabel = r.days+' day'+(r.days===1?'':'s')+' after expiry';
+    else dayLabel = 'same day as expiry';
+    var stamp = el('span',{class:'stamp '+r.status, text: r.status==='early' ? 'EARLY EXIT' : 'EXPIRED'});
+    body.appendChild(el('tr',{},[
+      el('td',{text:r.learner}),
+      el('td',{class:'mono',text:r.withdrawn}),
+      el('td',{class:'mono',text:r.expiry}),
+      el('td',{},[stamp]),
+      el('td',{class:'num',text:dayLabel})
+    ]));
+  });
+
+  $('expiryExportBtn').onclick = function(){
+    var rows=[['Learner','Withdrawn Date','Expiry Date','Status','Days vs. expiry']];
+    results.forEach(function(r){
+      rows.push([r.learner, r.withdrawn, r.expiry, r.status==='early'?'Early withdrawal':'Natural expiry', r.days]);
+    });
+    downloadCSV('withdrawal-compliance-results.csv', rows);
+  };
+}
+
+function renderExpiry(){
+  renderExpiryTable();
+  renderExpiryResults();
+}
+
+/* ============================================================
+   REGISTRATION TAB LOGIC
+   ============================================================ */
+function addRegistrationRows(headers, rows){
+  var learnerIdx = findCol(headers, ['learner','name','learner id','learner name']);
+  var dateIdx = findCol(headers, ['registration date','registered date','date of registration','enrolment date','enrollment date','date registered','registration']);
+  var errors=[];
+  if(dateIdx===-1){
+    errors.push('Couldn\'t find a "Registration Date" column in the header row. Check the column name matches the template.');
+    showErrors('registrationErrors', errors);
+    return;
+  }
+  var added=0;
+  rows.forEach(function(row, i){
+    if(row.every(function(c){ return c===''; })) return;
+    var learner = learnerIdx!==-1 ? row[learnerIdx] : '';
+    if(!learner) learner = 'Learner (row '+(i+2)+')';
+    var res = parseFlexibleDate(row[dateIdx]);
+    if(res.error){ errors.push('Row '+(i+2)+' ('+learner+'): '+res.error); return; }
+    registrationRecords.push({id:uid(), learner:learner, registered:formatISO(res.date)});
+    added++;
+  });
+  if(added){ saveRecords(STORAGE.registration, registrationRecords); renderRegistration(); }
+  showErrors('registrationErrors', errors);
+}
+
+$('registrationFileInput').addEventListener('change', function(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var parsed = parseDelimitedText(String(ev.target.result));
+    addRegistrationRows(parsed.headers, parsed.rows);
+    $('registrationFileInput').value='';
+  };
+  reader.readAsText(file);
+});
+
+$('registrationTemplateBtn').addEventListener('click', function(){
+  downloadCSV('registration-template.csv', [
+    ['Learner','Registration Date'],
+    ['Aditi Sharma','15/01/2025'],
+    ['Ravi Kumar','03/09/2026']
+  ]);
+});
+
+$('registrationManualForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var learner = $('registrationManualLearner').value.trim();
+  var res = parseFlexibleDate($('registrationManualDate').value);
+  if(!learner || res.error){ showErrors('registrationErrors', ['Fill in a learner name and a registration date.']); return; }
+  registrationRecords.push({id:uid(), learner:learner, registered:formatISO(res.date)});
+  saveRecords(STORAGE.registration, registrationRecords);
+  showErrors('registrationErrors', []);
+  this.reset();
+  renderRegistration();
+});
+
+$('registrationPasteBtn').addEventListener('click', function(){
+  var text = $('registrationPasteArea').value;
+  if(!text.trim()) return;
+  var parsed = parseDelimitedText(text);
+  addRegistrationRows(parsed.headers, parsed.rows);
+  $('registrationPasteArea').value='';
+});
+
+$('registrationClearBtn').addEventListener('click', function(){
+  if(!registrationRecords.length) return;
+  if(confirm('Remove all '+registrationRecords.length+' registration records? This can\'t be undone.')){
+    registrationRecords=[]; saveRecords(STORAGE.registration, registrationRecords); renderRegistration();
+  }
+});
+
+function removeRegistrationRecord(id){
+  registrationRecords = registrationRecords.filter(function(r){ return r.id!==id; });
+  saveRecords(STORAGE.registration, registrationRecords);
+  renderRegistration();
+}
+
+function renderRegistrationTable(){
+  var body = $('registrationTableBody');
+  body.innerHTML='';
+  if(!registrationRecords.length){
+    body.appendChild(el('tr',{class:'empty-row'},[el('td',{colspan:'3',text:'No records yet. Add one above or upload a CSV.'})]));
+    return;
+  }
+  registrationRecords.forEach(function(r){
+    var btn = el('button',{class:'remove-link',type:'button',text:'Remove'});
+    btn.addEventListener('click', function(){ removeRegistrationRecord(r.id); });
+    body.appendChild(el('tr',{},[
+      el('td',{text:r.learner}),
+      el('td',{class:'mono',text:r.registered}),
+      el('td',{},[btn])
+    ]));
+  });
+}
+
+function drawChart(rows, maxCount){
+  var svg = $('trendChart');
+  svg.innerHTML='';
+  var n = rows.length;
+  var width = Math.max(960, n*40);
+  svg.setAttribute('width', width);
+  svg.setAttribute('viewBox','0 0 '+width+' 230');
+  var chartH = 160, baseY = 180, gap=6;
+  var barW = (width/n) - gap;
+  var scale = maxCount>0 ? chartH/maxCount : 0;
+
+  var ns='http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs){
+    var e=document.createElementNS(ns, tag);
+    Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+  svg.appendChild(svgEl('line',{x1:0,y1:baseY,x2:width,y2:baseY,stroke:'#CBD2D4','stroke-width':1.5}));
+
+  rows.forEach(function(row, i){
+    var x = i*(barW+gap);
+    var h = row.count*scale;
+    var y = baseY-h;
+    var color = row.flag==='spike' ? '#B8712A' : row.flag==='dip' ? '#AF3A44' : '#16202A';
+    svg.appendChild(svgEl('rect',{x:x, y:y, width:barW, height:h, fill:color}));
+    if(row.count>0){
+      var lbl = svgEl('text',{x:x+barW/2, y:y-5, 'text-anchor':'middle','font-size':'10','font-family':'IBM Plex Mono, monospace',fill:'#16202A'});
+      lbl.textContent = row.count;
+      svg.appendChild(lbl);
+    }
+    var mlbl = svgEl('text',{x:x+barW/2, y:baseY+16, 'text-anchor':'end','font-size':'9','font-family':'IBM Plex Mono, monospace',fill:'#57666F', transform:'rotate(-55 '+(x+barW/2)+' '+(baseY+16)+')'});
+    mlbl.textContent = monthLabelShort(row.month);
+    svg.appendChild(mlbl);
+  });
+}
+
+function renderRegistrationAnalysis(){
+  var today = todayUTC();
+  var months = last24MonthsKeys(today);
+  var dates = registrationRecords.map(function(r){ return parseFlexibleDate(r.registered).date; });
+
+  $('windowStamp').textContent = 'Rolling window: ' + monthLabel(months[0]) + ' \u2013 ' + monthLabel(months[months.length-1]) +
+    ' (today: ' + formatDisplay(today) + '). The current month is still in progress, so its count will look lower than a full month.';
+
+  spikeThreshold = parseFloat($('thresholdInput').value) || 30;
+  localStorage.setItem(STORAGE.threshold, spikeThreshold);
+
+  var monthly = computeMonthlyCounts(dates, months);
+  var flagged = computeSpikeDip(monthly, spikeThreshold);
+  var maxCount = Math.max.apply(null, monthly.map(function(m){ return m.count; }).concat([1]));
+
+  drawChart(flagged, maxCount);
+
+  var mBody = $('monthlyTableBody');
+  mBody.innerHTML='';
+  flagged.forEach(function(row){
+    var changeText = row.change===null ? (row.flag==='spike' ? 'new activity' : '\u2014') : (row.change>=0?'+':'')+Math.round(row.change)+'%';
+    var flagCell = row.flag ? el('span',{class:'stamp '+row.flag, text:row.flag.toUpperCase()}) : el('span',{text:'\u2014',style:'color:#57666F'});
+    mBody.appendChild(el('tr',{},[
+      el('td',{text:row.label}),
+      el('td',{class:'num',text:row.count}),
+      el('td',{class:'num',text:changeText}),
+      el('td',{},[flagCell])
+    ]));
+  });
+
+  $('registrationExportSummaryBtn').onclick = function(){
+    var rows=[['Month','Registrations','Change vs. prior month (%)','Flag']];
+    flagged.forEach(function(row){
+      rows.push([row.label, row.count, row.change===null?'':Math.round(row.change), row.flag?row.flag:'']);
+    });
+    downloadCSV('monthly-registration-summary.csv', rows);
+  };
+
+  var cmp = compare12MonthPeriods(dates, today);
+  var recentRange = monthRange(today,11,0);
+  var priorRange = monthRange(today,23,12);
+  var card = $('compareCard');
+  card.innerHTML='';
+  function block(num, label, range){
+    return el('div',{class:'compare-block'},[
+      el('div',{class:'num',text:num}),
+      el('div',{class:'label',text:label}),
+      el('div',{class:'range',text:monthLabel(range[0])+' \u2013 '+monthLabel(range[range.length-1])})
+    ]);
+  }
+  card.appendChild(block(cmp.prior, 'Previous 12 months', priorRange));
+  card.appendChild(block(cmp.recent, 'Last 12 months', recentRange));
+  var verdictWrap = el('div',{class:'compare-verdict'});
+  verdictWrap.appendChild(el('span',{class:'stamp '+cmp.verdict, text:cmp.verdict.toUpperCase()}));
+  var deltaText;
+  if(cmp.pctChange===null) deltaText = (cmp.recent-cmp.prior>=0?'+':'')+(cmp.recent-cmp.prior)+' learners';
+  else deltaText = (cmp.recent-cmp.prior>=0?'+':'')+(cmp.recent-cmp.prior)+' learners ('+(cmp.pctChange>=0?'+':'')+Math.round(cmp.pctChange)+'%)';
+  verdictWrap.appendChild(el('div',{class:'delta',text:deltaText}));
+  card.appendChild(verdictWrap);
+
+  var windowStart = months[0];
+  var windowSet = {}; months.forEach(function(k){ windowSet[k]=true; });
+  var inWindow = registrationRecords.filter(function(r){ return windowSet[monthKey(parseFlexibleDate(r.registered).date)]; })
+    .slice()
+    .sort(function(a,b){ return a.registered < b.registered ? -1 : a.registered > b.registered ? 1 : 0; });
+
+  $('learner24Count').textContent = inWindow.length + ' learner' + (inWindow.length===1?'':'s') + ' registered between ' + monthLabel(months[0]) + ' and ' + monthLabel(months[months.length-1]) + '.';
+
+  var lBody = $('learner24TableBody');
+  lBody.innerHTML='';
+  if(!inWindow.length){
+    lBody.appendChild(el('tr',{class:'empty-row'},[el('td',{colspan:'3',text:'No registrations fall in this window yet.'})]));
+  } else {
+    inWindow.forEach(function(r, i){
+      lBody.appendChild(el('tr',{},[
+        el('td',{class:'num',text:i+1}),
+        el('td',{text:r.learner}),
+        el('td',{class:'mono',text:r.registered})
+      ]));
+    });
+  }
+
+  $('registrationExportListBtn').onclick = function(){
+    var rows=[['#','Learner','Registration Date']];
+    inWindow.forEach(function(r,i){ rows.push([i+1, r.learner, r.registered]); });
+    downloadCSV('learners-last-24-months.csv', rows);
+  };
+}
+
+$('thresholdInput').addEventListener('input', function(){ renderRegistrationAnalysis(); });
+
+function renderRegistration(){
+  renderRegistrationTable();
+  renderRegistrationAnalysis();
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+$('thresholdInput').value = spikeThreshold;
+$('todayStamp').textContent = formatDisplay(todayUTC());
+renderExpiry();
+renderRegistration();
+
+})();
+</script>
+</body>
+</html>
