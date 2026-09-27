@@ -9,15 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#16202A;
-    --paper:#EDEFEF;
+    --ink:#17233D;
+    --paper:#F6F8FC;
     --raised:#FFFFFF;
-    --slate:#57666F;
-    --line:#CBD2D4;
-    --amber:#B8712A;
-    --forest:#2F6B4F;
-    --rose:#AF3A44;
-    --focus:#2E6E8E;
+    --slate:#6F7C91;
+    --line:#E3E8F0;
+    --amber:#1677FF;
+    --forest:#20B26B;
+    --rose:#F0445C;
+    --focus:#1677FF;
+    --soft-blue:#EAF3FF;
+    --shadow:0 8px 24px rgba(23,35,61,.06);
     --font-display:'Zilla Slab', Georgia, serif;
     --font-body:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
     --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
@@ -30,6 +32,16 @@
     font-family:var(--font-body);
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
+    transition:background .2s,color .2s;
+  }
+  body.dark{
+    --ink:#F1F5FB;
+    --paper:#111827;
+    --raised:#182235;
+    --slate:#A7B3C7;
+    --line:#2B3850;
+    --soft-blue:#1D2C45;
+    --shadow:0 10px 28px rgba(0,0,0,.22);
   }
   a{color:var(--focus);}
   :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
@@ -37,68 +49,56 @@
     *{transition:none !important; animation:none !important;}
   }
 
-  .wrap{max-width:920px; margin:0 auto; padding:28px 20px 80px;}
+  .wrap{max-width:1180px; margin:0 auto; padding:22px 24px 60px;}
 
   /* ---------- header ---------- */
   header.masthead{
-    border-bottom:3px solid var(--ink);
-    padding-bottom:16px;
-    margin-bottom:22px;
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    padding:16px 18px;
+    margin-bottom:18px;
     display:flex;
     flex-wrap:wrap;
     justify-content:space-between;
-    align-items:flex-end;
+    align-items:center;
     gap:12px;
   }
   header.masthead h1{
     font-family:var(--font-display);
     font-weight:700;
-    font-size:2rem;
+    font-size:1.55rem;
     margin:0 0 4px;
     letter-spacing:0.01em;
   }
-  header.masthead .tagline{
-    margin:0;
-    color:var(--slate);
-    font-size:0.95rem;
-    max-width:46ch;
+  header.masthead .tagline{display:none;}
+  .header-actions{display:flex;align-items:center;gap:10px;}
+  .theme-toggle{
+    width:38px;height:38px;border:1px solid var(--line);border-radius:10px;
+    background:var(--raised);color:var(--ink);font-size:1rem;cursor:pointer;
   }
+  .theme-toggle:hover{background:var(--soft-blue);}
   .today-stamp{
-    font-family:var(--font-mono);
-    font-size:0.78rem;
-    color:var(--slate);
-    border:1.5px solid var(--line);
-    padding:6px 12px;
-    white-space:nowrap;
+    font-family:var(--font-mono);font-size:0.72rem;color:var(--slate);
+    padding:6px 9px;white-space:nowrap;
   }
   .today-stamp b{color:var(--ink); font-weight:600;}
 
   /* ---------- tabs ---------- */
-  .tabs{display:flex; gap:4px; border-bottom:1.5px solid var(--line); margin-bottom:26px;}
+  .tabs{display:flex;gap:6px;background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:18px;box-shadow:var(--shadow);}
+  .tabs .tab-btn{flex:1;text-align:center;}
   .tab-btn{
-    font-family:var(--font-display);
-    font-size:1.05rem;
-    font-weight:600;
-    background:none;
-    border:none;
-    border-bottom:3px solid transparent;
-    padding:10px 4px 12px;
-    margin-right:24px;
-    color:var(--slate);
-    cursor:pointer;
+    font-family:var(--font-body);font-size:0.9rem;font-weight:600;background:none;
+    border:none;border-radius:9px;padding:9px 12px;color:var(--slate);cursor:pointer;
   }
   .tab-btn:hover{color:var(--ink);}
-  .tab-btn.active{color:var(--ink); border-bottom-color:var(--amber);}
+  .tab-btn.active{color:#fff;background:var(--amber);}
   .tab-panel{display:none;}
   .tab-panel.active{display:block;}
 
   /* ---------- section headings ---------- */
-  h2.section-title{
-    font-family:var(--font-display);
-    font-size:1.3rem;
-    font-weight:600;
-    margin:34px 0 10px;
-  }
+  h2.section-title{font-family:var(--font-body);font-size:1.05rem;font-weight:700;margin:22px 0 10px;}
   h2.section-title:first-of-type{margin-top:0;}
   h3.sub-title{
     font-family:var(--font-body);
@@ -302,6 +302,31 @@
     thead th, tbody td{padding:7px 6px; font-size:0.82rem;}
     table{font-size:0.82rem;}
   }
+
+  .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .section-head .section-title{margin-bottom:8px;}
+  .link-btn{border:0;background:none;color:var(--amber);font-weight:600;font-size:.82rem;cursor:pointer;padding:5px 0;}
+  .link-btn:hover{text-decoration:underline;}
+  .method-panel{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow);}
+  .segmented{background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:4px;margin-bottom:10px;}
+  .method-btn{padding:7px 12px;margin-right:4px;border-radius:7px;}
+  .method-btn.active{background:var(--soft-blue);border-bottom-color:transparent;color:var(--amber);}
+  .btn{border-radius:9px;}
+  .btn.primary,.btn:not(.secondary):not(.quiet):not(.danger){background:var(--amber);border-color:var(--amber);color:#fff;}
+  .btn.secondary,.btn.quiet{background:var(--raised);border-color:var(--line);color:var(--ink);}
+  .btn.danger{border-color:#F3C8CF;color:var(--rose);background:var(--raised);}
+  table{background:var(--raised);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  thead th{background:var(--soft-blue);color:var(--ink);}
+  tbody tr.hidden-row{display:none;}
+  .expandable-table{max-height:none;overflow:auto;}
+  .chart-scroll{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:var(--shadow);}
+  .compare-card{border:1px solid var(--line);border-radius:12px;background:var(--raised);box-shadow:var(--shadow);padding:14px 16px;}
+  .compact-details{margin-top:10px;background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:0 12px;}
+  .compact-details summary{cursor:pointer;padding:10px 0;font-size:.82rem;font-weight:600;color:var(--slate);}
+  .compact-details .table-scroll{padding-bottom:8px;}
+  footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);font-size:.72rem;color:var(--slate);}
+  body.dark .btn.danger{background:var(--raised);}
+  @media (max-width:600px){.wrap{padding:14px 12px 40px}.today-stamp{display:none}.section-head{align-items:center}.header-actions{margin-left:auto}}
 </style>
 </head>
 <body>
@@ -312,7 +337,10 @@
       <h1>Learner Ledger</h1>
       <p class="tagline">Two record books: check withdrawal timing against expiry dates, and watch registration trends over time.</p>
     </div>
-    <div class="today-stamp">Today: <b id="todayStamp"></b></div>
+    <div class="header-actions">
+      <div class="today-stamp"><b id="todayStamp"></b></div>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle dark/light mode" aria-label="Toggle dark/light mode">☾</button>
+    </div>
   </header>
 
   <nav class="tabs">
@@ -323,20 +351,10 @@
   <!-- ================= EXPIRY TAB ================= -->
   <section class="tab-panel active" id="tab-expiry">
 
-    <details class="help" open>
-      <summary>How dates work here</summary>
-      <div class="help-body">
-        <p>Enter dates as <code>DD/MM/YYYY</code> (e.g. 15/03/2026) or <code>YYYY-MM-DD</code> (e.g. 2026-03-15). A date typed the U.S. way, like <code>03/15/2026</code>, will be rejected rather than silently misread — that's deliberate.</p>
-        <p>Uploading a CSV or Excel file? Format the date columns as one of the patterns above before saving. If a column got auto-converted into a plain number (like <code>46095</code>), that's fine too — Excel/Sheets date serial numbers are recognised automatically.</p>
-        <p>Manual entry uses your browser's own date picker, so the format question never comes up there.</p>
-        <p>Anything downloaded from this page comes out as <code>YYYY-MM-DD</code>, which Excel and Google Sheets both read as a real date automatically — not as text.</p>
-      </div>
-    </details>
-
     <h2 class="section-title">Add withdrawn learners</h2>
 
     <div class="segmented" data-group="expiry">
-      <button class="method-btn active" data-method="upload">Upload CSV</button>
+      <button class="method-btn active" data-method="upload">Upload file</button>
       <button class="method-btn" data-method="manual">Manual entry</button>
       <button class="method-btn" data-method="paste">Paste data</button>
     </div>
@@ -344,7 +362,7 @@
     <div class="method-panel active" data-group="expiry" data-method="upload">
       <div class="field-row">
         <div class="field" style="flex:2 1 220px;">
-          <label for="expiryFileInput">CSV or Excel file with columns: Learner, Withdrawn Date, Expiry Date</label>
+          <label for="expiryFileInput">CSV or Excel · Learner name, Withdrawn Date, Expiry Date</label>
           <input type="file" id="expiryFileInput" accept=".csv,.txt,.xlsx,.xls">
         </div>
       </div>
@@ -377,7 +395,7 @@
 
     <div class="method-panel" data-group="expiry" data-method="paste">
       <div class="field">
-        <label for="expiryPasteArea">Paste rows copied from Excel or a CSV (first row = headers: Learner, Withdrawn Date, Expiry Date)</label>
+        <label for="expiryPasteArea">Paste rows copied from Excel or a CSV (first row = headers: Learner name, Withdrawn Date, Expiry Date)</label>
         <textarea id="expiryPasteArea" placeholder="Learner&#9;Withdrawn Date&#9;Expiry Date&#10;Aditi Sharma&#9;15/01/2026&#9;30/06/2026"></textarea>
       </div>
       <div class="btn-row">
@@ -387,8 +405,8 @@
 
     <div id="expiryErrors"></div>
 
-    <h2 class="section-title">Withdrawn learners on record</h2>
-    <div class="table-scroll">
+    <div class="section-head"><h2 class="section-title">Withdrawn learners</h2><button class="link-btn" id="expiryExpandBtn" type="button">Show all</button></div>
+    <div class="table-scroll expandable-table" id="expiryTableWrap">
       <table>
         <thead><tr><th>Learner</th><th>Withdrawn</th><th>Expiry</th><th></th></tr></thead>
         <tbody id="expiryTableBody"></tbody>
@@ -415,20 +433,10 @@
   <!-- ================= REGISTRATION TAB ================= -->
   <section class="tab-panel" id="tab-registration">
 
-    <details class="help">
-      <summary>How dates work here</summary>
-      <div class="help-body">
-        <p>Enter dates as <code>DD/MM/YYYY</code> (e.g. 15/03/2026) or <code>YYYY-MM-DD</code> (e.g. 2026-03-15). A date typed the U.S. way, like <code>03/15/2026</code>, will be rejected rather than silently misread — that's deliberate.</p>
-        <p>Uploading a CSV or Excel file? Format the date column as one of the patterns above before saving. Plain numbers like <code>46095</code> (Excel/Sheets date serial numbers) are recognised automatically too.</p>
-        <p>Manual entry uses your browser's own date picker, so the format question never comes up there.</p>
-        <p>Anything downloaded from this page comes out as <code>YYYY-MM-DD</code>, which Excel and Google Sheets both read as a real date automatically.</p>
-      </div>
-    </details>
-
     <h2 class="section-title">Add registered learners</h2>
 
     <div class="segmented" data-group="registration">
-      <button class="method-btn active" data-method="upload">Upload CSV</button>
+      <button class="method-btn active" data-method="upload">Upload file</button>
       <button class="method-btn" data-method="manual">Manual entry</button>
       <button class="method-btn" data-method="paste">Paste data</button>
     </div>
@@ -436,7 +444,7 @@
     <div class="method-panel active" data-group="registration" data-method="upload">
       <div class="field-row">
         <div class="field" style="flex:2 1 220px;">
-          <label for="registrationFileInput">CSV or Excel file with columns: Learner, Registration Date</label>
+          <label for="registrationFileInput">CSV or Excel · Learner name, Date of registration</label>
           <input type="file" id="registrationFileInput" accept=".csv,.txt,.xlsx,.xls">
         </div>
       </div>
@@ -465,7 +473,7 @@
 
     <div class="method-panel" data-group="registration" data-method="paste">
       <div class="field">
-        <label for="registrationPasteArea">Paste rows copied from Excel or a CSV (first row = headers: Learner, Registration Date)</label>
+        <label for="registrationPasteArea">Paste rows copied from Excel or a CSV (first row = headers: Learner name, Date of registration)</label>
         <textarea id="registrationPasteArea" placeholder="Learner&#9;Registration Date&#10;Aditi Sharma&#9;15/01/2025"></textarea>
       </div>
       <div class="btn-row">
@@ -475,8 +483,8 @@
 
     <div id="registrationErrors"></div>
 
-    <h2 class="section-title">Registered learners on record</h2>
-    <div class="table-scroll">
+    <div class="section-head"><h2 class="section-title">Registered learners</h2><button class="link-btn" id="registrationExpandBtn" type="button">Show all</button></div>
+    <div class="table-scroll expandable-table" id="registrationTableWrap">
       <table>
         <thead><tr><th>Learner</th><th>Registration date</th><th></th></tr></thead>
         <tbody id="registrationTableBody"></tbody>
@@ -486,13 +494,11 @@
       <button class="btn danger" id="registrationClearBtn" type="button">Clear all records</button>
     </div>
 
-    <h2 class="section-title">Monthly registration trend</h2>
+    <h2 class="section-title">Monthly trend</h2>
     <p class="chart-note" id="windowStamp"></p>
 
     <div class="threshold-row">
-      <label for="thresholdInput">Flag a month when registrations move by at least</label>
-      <input type="number" id="thresholdInput" min="1" max="500" value="30">
-      <span>% from the month before</span>
+      <span>Flag change:</span><input type="number" id="thresholdInput" min="1" max="500" value="30"><span>%</span>
     </div>
 
     <div class="chart-scroll">
@@ -504,12 +510,15 @@
       <span><i class="legend-swatch" style="background:var(--rose)"></i> dip</span>
     </div>
 
-    <div class="table-scroll" style="margin-top:18px;">
-      <table>
-        <thead><tr><th>Month</th><th class="num">Registrations</th><th class="num">Change vs. prior month</th><th>Flag</th></tr></thead>
-        <tbody id="monthlyTableBody"></tbody>
-      </table>
-    </div>
+    <details class="compact-details">
+      <summary>View monthly figures</summary>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Month</th><th class="num">Registrations</th><th class="num">Change</th><th>Flag</th></tr></thead>
+          <tbody id="monthlyTableBody"></tbody>
+        </table>
+      </div>
+    </details>
     <div class="btn-row">
       <button class="btn secondary" id="registrationExportSummaryBtn" type="button">Download monthly summary (CSV)</button>
     </div>
@@ -517,9 +526,9 @@
     <h2 class="section-title">Last 12 months vs. the 12 months before that</h2>
     <div class="compare-card" id="compareCard"></div>
 
-    <h2 class="section-title">Learners registered in the last 24 months</h2>
+    <div class="section-head"><h2 class="section-title">Learners · last 24 months</h2><button class="link-btn" id="learner24ExpandBtn" type="button">Show all</button></div>
     <p class="chart-note" id="learner24Count"></p>
-    <div class="table-scroll">
+    <div class="table-scroll expandable-table" id="learner24TableWrap">
       <table>
         <thead><tr><th class="num">#</th><th>Learner</th><th>Registration date</th></tr></thead>
         <tbody id="learner24TableBody"></tbody>
@@ -531,9 +540,7 @@
 
   </section>
 
-  <footer>
-    Your data stays in this browser (nothing is uploaded anywhere). It's saved locally, so it will still be here next time — as long as you use the same browser on the same device. Download a CSV whenever you want a backup or need to move data elsewhere.
-  </footer>
+  <footer>Data is stored locally in this browser.</footer>
 
 </div>
 
@@ -610,7 +617,9 @@ function monthRange(today, startOffset, endOffset){
   }
   return keys;
 }
-function last24MonthsKeys(today){ return monthRange(today,23,0); }
+function last24MonthsKeys(today){ return monthRange(today,24,1); }
+function last12CompletedMonthsKeys(today){ return monthRange(today,12,1); }
+function previous12CompletedMonthsKeys(today){ return monthRange(today,24,13); }
 function todayUTC(){ var n=new Date(); return new Date(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate())); }
 function uid(){ return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2); }
 
@@ -640,8 +649,8 @@ function computeSpikeDip(monthlyCounts, thresholdPct){
 }
 function compare12MonthPeriods(dates, today){
   var recentKeys={}, priorKeys={};
-  monthRange(today,11,0).forEach(function(k){ recentKeys[k]=true; });
-  monthRange(today,23,12).forEach(function(k){ priorKeys[k]=true; });
+  last12CompletedMonthsKeys(today).forEach(function(k){ recentKeys[k]=true; });
+  previous12CompletedMonthsKeys(today).forEach(function(k){ priorKeys[k]=true; });
   var recent=0, prior=0;
   dates.forEach(function(d){
     var k=monthKey(d);
@@ -784,7 +793,7 @@ function showErrors(containerId, errors){
 }
 
 function addExpiryRows(headers, rows){
-  var learnerIdx = findCol(headers, ['learner','name','learner id','learner name']);
+  var learnerIdx = findCol(headers, ['learner name','learner','name','learner id']);
   var withdrawnIdx = findCol(headers, ['withdrawn date','withdrawal date','date withdrawn','withdrawn']);
   var expiryIdx = findCol(headers, ['expiry date','expiration date','date of expiry','expiry']);
   var errors=[];
@@ -847,7 +856,7 @@ $('expiryFileInput').addEventListener('change', function(e){
 
 $('expiryTemplateBtn').addEventListener('click', function(){
   downloadCSV('expiry-template.csv', [
-    ['Learner','Withdrawn Date','Expiry Date'],
+    ['Learner name','Withdrawn Date','Expiry Date'],
     ['Aditi Sharma','15/01/2026','30/06/2026'],
     ['Ravi Kumar','20/07/2026','10/07/2026']
   ]);
@@ -966,7 +975,7 @@ function renderExpiry(){
    REGISTRATION TAB LOGIC
    ============================================================ */
 function addRegistrationRows(headers, rows){
-  var learnerIdx = findCol(headers, ['learner','name','learner id','learner name']);
+  var learnerIdx = findCol(headers, ['learner name','learner','name','learner id']);
   var dateIdx = findCol(headers, ['registration date','registered date','date of registration','enrolment date','enrollment date','date registered','registration']);
   var errors=[];
   if(dateIdx===-1){
@@ -1000,7 +1009,7 @@ $('registrationFileInput').addEventListener('change', function(e){
 
 $('registrationTemplateBtn').addEventListener('click', function(){
   downloadCSV('registration-template.csv', [
-    ['Learner','Registration Date'],
+    ['Learner name','Date of registration'],
     ['Aditi Sharma','15/01/2025'],
     ['Ravi Kumar','03/09/2026']
   ]);
@@ -1055,6 +1064,7 @@ function renderRegistrationTable(){
       el('td',{},[btn])
     ]));
   });
+  renderRegistrationExpand();
 }
 
 function drawChart(rows, maxCount){
@@ -1099,7 +1109,7 @@ function renderRegistrationAnalysis(){
   var dates = registrationRecords.map(function(r){ return parseFlexibleDate(r.registered).date; });
 
   $('windowStamp').textContent = 'Rolling window: ' + monthLabel(months[0]) + ' \u2013 ' + monthLabel(months[months.length-1]) +
-    ' (today: ' + formatDisplay(today) + '). The current month is still in progress, so its count will look lower than a full month.';
+    ' (today: ' + formatDisplay(today) + '). The current month is excluded; only completed months are included.';
 
   spikeThreshold = parseFloat($('thresholdInput').value) || 30;
   localStorage.setItem(STORAGE.threshold, spikeThreshold);
@@ -1132,8 +1142,8 @@ function renderRegistrationAnalysis(){
   };
 
   var cmp = compare12MonthPeriods(dates, today);
-  var recentRange = monthRange(today,11,0);
-  var priorRange = monthRange(today,23,12);
+  var recentRange = last12CompletedMonthsKeys(today);
+  var priorRange = previous12CompletedMonthsKeys(today);
   var card = $('compareCard');
   card.innerHTML='';
   function block(num, label, range){
@@ -1174,9 +1184,10 @@ function renderRegistrationAnalysis(){
       ]));
     });
   }
+  renderLearner24Expand();
 
   $('registrationExportListBtn').onclick = function(){
-    var rows=[['#','Learner','Registration Date']];
+    var rows=[['#','Learner name','Date of registration']];
     inWindow.forEach(function(r,i){ rows.push([i+1, r.learner, r.registered]); });
     downloadCSV('learners-last-24-months.csv', rows);
   };
@@ -1189,11 +1200,58 @@ function renderRegistration(){
   renderRegistrationAnalysis();
 }
 
+
+/* ============================================================
+   COMPACT UI + THEME
+   ============================================================ */
+var compactVisibleCount = 5;
+var expiryExpanded=false, registrationExpanded=false, learner24Expanded=false;
+function applyExpandableRows(bodyId, buttonId, expanded){
+  var body=$(bodyId), btn=$(buttonId);
+  if(!body || !btn) return;
+  var rows=Array.prototype.slice.call(body.querySelectorAll('tr'));
+  rows.forEach(function(row,i){
+    if(i>=compactVisibleCount && !row.classList.contains('empty-row')) row.classList.toggle('hidden-row', !expanded);
+  });
+  var total=rows.filter(function(r){return !r.classList.contains('empty-row');}).length;
+  btn.style.display=total>compactVisibleCount?'inline-block':'none';
+  btn.textContent=expanded?'Show less':'Show all ('+total+')';
+}
+function bindExpandableButton(buttonId, getState, setState, renderFn){
+  var btn=$(buttonId);
+  if(!btn || btn.dataset.bound) return;
+  btn.dataset.bound='1';
+  btn.addEventListener('click',function(){ setState(!getState()); renderFn(); });
+}
+function renderExpiryExpand(){ applyExpandableRows('expiryTableBody','expiryExpandBtn',expiryExpanded); }
+function renderRegistrationExpand(){ applyExpandableRows('registrationTableBody','registrationExpandBtn',registrationExpanded); }
+function renderLearner24Expand(){ applyExpandableRows('learner24TableBody','learner24ExpandBtn',learner24Expanded); }
+function initTheme(){
+  var saved=localStorage.getItem('learnerLedger.theme');
+  if(saved==='dark') document.body.classList.add('dark');
+  updateThemeButton();
+  $('themeToggle').addEventListener('click',function(){
+    document.body.classList.toggle('dark');
+    localStorage.setItem('learnerLedger.theme',document.body.classList.contains('dark')?'dark':'light');
+    updateThemeButton();
+  });
+}
+function updateThemeButton(){
+  var b=$('themeToggle'); if(!b) return;
+  var dark=document.body.classList.contains('dark');
+  b.textContent=dark?'☀':'☾';
+  b.title=dark?'Switch to light mode':'Switch to dark mode';
+}
+
 /* ============================================================
    INIT
    ============================================================ */
 $('thresholdInput').value = spikeThreshold;
 $('todayStamp').textContent = formatDisplay(todayUTC());
+initTheme();
+bindExpandableButton('expiryExpandBtn', function(){return expiryExpanded;}, function(v){expiryExpanded=v;}, renderExpiry);
+bindExpandableButton('registrationExpandBtn', function(){return registrationExpanded;}, function(v){registrationExpanded=v;}, renderRegistration);
+bindExpandableButton('learner24ExpandBtn', function(){return learner24Expanded;}, function(v){learner24Expanded=v;}, renderRegistrationAnalysis);
 renderExpiry();
 renderRegistration();
 
