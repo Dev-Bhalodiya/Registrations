@@ -160,7 +160,7 @@
   .field-row{display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:12px;}
   .field{display:flex; flex-direction:column; gap:5px; flex:1 1 160px;}
   .field label{font-size:0.8rem; color:var(--slate);}
-  input[type="text"], input[type="date"], input[type="number"], textarea{
+  input[type="text"], input[type="date"], input[type="number"], input[type="password"], textarea{
     font-family:var(--font-body);
     font-size:0.92rem;
     padding:8px 10px;
@@ -330,6 +330,29 @@
 </style>
 </head>
 <body>
+
+<!-- Static Login Overlay -->
+<div id="authOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--paper); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+  <div style="background:var(--raised); padding:30px 40px; border-radius:12px; box-shadow:var(--shadow); text-align:center; max-width: 350px; width: 90%; border: 1px solid var(--line);">
+    <h2 style="margin-top:0; font-family:var(--font-display);">Portal Login</h2>
+    <p style="color:var(--slate); font-size:0.9rem; margin-bottom:24px;">Please enter your credentials to access the Learner Ledger.</p>
+    
+    <div style="margin-bottom: 15px; text-align: left;">
+      <label for="loginId" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:5px; font-weight:600;">User ID</label>
+      <input type="text" id="loginId" placeholder="Enter ID" style="width:100%; box-sizing:border-box;">
+    </div>
+    
+    <div style="margin-bottom: 20px; text-align: left;">
+      <label for="loginPwd" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:5px; font-weight:600;">Password</label>
+      <input type="password" id="loginPwd" placeholder="Enter Password" style="width:100%; box-sizing:border-box;">
+    </div>
+    
+    <p id="loginError" style="color:var(--rose); font-size:0.85rem; font-weight:600; display:none; margin-top:-10px; margin-bottom:15px;">Invalid ID or Password.</p>
+    
+    <button id="loginBtn" class="btn primary" style="width:100%;">Login & Access</button>
+  </div>
+</div>
+
 <div class="wrap">
 
   <header class="masthead">
@@ -706,19 +729,20 @@ function findCol(headers, candidates){
 }
 
 /* ============================================================
-   STORAGE
+   STORAGE (Tab-Close Data Wipe)
    ============================================================ */
 function loadRecords(key){
-  try{ var raw=localStorage.getItem(key); return raw?JSON.parse(raw):[]; }
+  try{ var raw=sessionStorage.getItem(key); return raw?JSON.parse(raw):[]; }
   catch(e){ return []; }
 }
 function saveRecords(key, records){
-  try{ localStorage.setItem(key, JSON.stringify(records)); }
-  catch(e){ alert('Could not save to this browser\'s storage. Your data may be too large, or storage is full or blocked.'); }
+  try{ sessionStorage.setItem(key, JSON.stringify(records)); }
+  catch(e){ alert('Could not save to session storage.'); }
 }
 
 var expiryRecords = loadRecords(STORAGE.expiry);
 var registrationRecords = loadRecords(STORAGE.registration);
+// Keep the visual threshold preference in local storage, but data in session
 var spikeThreshold = parseFloat(localStorage.getItem(STORAGE.threshold)) || 30;
 
 /* ============================================================
@@ -1243,6 +1267,44 @@ function updateThemeButton(){
   b.textContent=dark?'☀':'☾';
   b.title=dark?'Switch to light mode':'Switch to dark mode';
 }
+
+
+/* ============================================================
+   STATIC LOGIN & 1-HOUR EXPIRY
+   ============================================================ */
+var STATIC_ID = "devbhalodiya";
+var STATIC_PWD = "dev282005"; 
+var sessionTimeout;
+
+$('loginBtn').addEventListener('click', function(){
+  var userId = $('loginId').value.trim();
+  var userPwd = $('loginPwd').value.trim();
+  
+  if(userId === STATIC_ID && userPwd === STATIC_PWD){
+    // Correct credentials: Hide overlay
+    $('authOverlay').style.display = 'none';
+    $('loginError').style.display = 'none';
+    
+    // Start 1-hour data destruction timer (3,600,000 milliseconds)
+    sessionTimeout = setTimeout(function(){
+      sessionStorage.clear(); // Wipe all learner data
+      alert("Session expired. All learner data has been safely wiped.");
+      location.reload(); // Reload page to lock the app again
+    }, 3600000);
+  } else {
+    // Incorrect credentials: Show error
+    $('loginError').style.display = 'block';
+    $('loginPwd').value = ""; // Clear password field for retry
+  }
+});
+
+// Allow pressing "Enter" key on the password field to login
+$('loginPwd').addEventListener('keypress', function(e){
+  if(e.key === 'Enter') {
+    e.preventDefault();
+    $('loginBtn').click();
+  }
+});
 
 /* ============================================================
    INIT
